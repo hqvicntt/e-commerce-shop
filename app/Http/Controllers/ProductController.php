@@ -23,4 +23,19 @@ class ProductController extends Controller
         // Pass the products data to the view named 'products.index'
         return view('products.index', compact('products'));
     }
+
+    /**
+     * Display the specified product.
+     * 
+     * @param int $id
+     * @return View
+     */
+    public function show(int $id): View
+    {
+        // Find the product by its ID or throw a 404 error if not found
+        $product = Product::findOrFail($id);
+
+        // Pass the single product data to the view named 'products.show'
+        return view('products.show', compact('product'));
+    }
 }

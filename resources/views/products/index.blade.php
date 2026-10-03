@@ -10,14 +10,14 @@
         integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
     <!-- Custom Style for Hover Effect -->
     <style>
-    .product-card {
-        transition: transform 0.2s ease, box-shadow 0.2s ease;
-    }
+        .product-card {
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
 
-    .product-card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15) !important;
-    }
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15) !important;
+        }
     </style>
 </head>
 
@@ -69,7 +69,10 @@
 
                         <!-- Product Name -->
                         <h5 class="card-title fw-bold text-dark text-truncate" title="{{ $product->name }}">
-                            {{ $product->name }}
+                            <a href="{{ route('products.show', ['id' => $product->id]) }}"
+                                class="text-dark text-decoration-none hover-primary">
+                                {{ $product->name }}
+                            </a>
                         </h5>
 
                         <!-- Product Description Snippet -->
@@ -84,7 +87,9 @@
                                 <small class="text-muted">Stock: {{ $product->quantity }}</small>
                             </div>
                             <!-- Call to Action Button -->
-                            <button class="btn btn-dark w-100 mt-2">Add to Cart</button>
+                            <button class="btn btn-dark w-100 mt-2" @if($product->quantity <= 0) disabled @endif>
+                                    Add to Cart
+                            </button>
                         </div>
                     </div>
                 </div>
