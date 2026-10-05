@@ -31,13 +31,36 @@
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto">
+                <ul class="navbar-nav ms-auto align-items-center">
                     <li class="nav-item">
                         <a class="nav-link active" href="{{ route('products.index') }}">Home</a>
                     </li>
-                    <li class="nav-item">
+                    <li class="nav-item me-3">
                         <a class="nav-link" href="#">Cart (0)</a>
                     </li>
+
+                    <!-- Check if the user is logged in -->
+                    @auth
+                    <!-- Display authenticated user's name as a welcome greeting -->
+                    <li class="nav-item text-white me-3">
+                        Welcome, <span class="fw-bold text-warning">{{ Auth::user()->name }}</span>
+                    </li>
+                    <!-- Logout Form (Must use POST method for security) -->
+                    <li class="nav-item">
+                        <form action="{{ route('logout') }}" method="POST" class="d-inline">
+                            @csrf
+                            <button type="submit" class="btn btn-sm btn-outline-light fw-semibold">Log Out</button>
+                        </form>
+                    </li>
+                    @else
+                    <!-- Display access links for guests / unauthenticated users -->
+                    <li class="nav-item">
+                        <a class="nav-link fw-semibold" href="{{ route('login') }}">Sign In</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="btn btn-sm btn-warning fw-bold ms-2 px-3" href="{{ route('register') }}">Sign Up</a>
+                    </li>
+                    @endauth
                 </ul>
             </div>
         </div>
