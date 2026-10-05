@@ -3,6 +3,7 @@
 use App\Http\Controllers\ProductController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\CartController;
 
 // Route for displaying the product catalog page
 Route::get('/products', [ProductController::class, 'index'])->name('products.index');
@@ -24,3 +25,9 @@ Route::post('/login', [AuthController::class, 'storeLogin'])->name('login.store'
 
 // Route for logging out the authenticated user
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+
+// Route for displaying the shopping cart page
+Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
+
+// Route for adding a product to the cart
+Route::get('/cart/add/{id}', [CartController::class, 'add'])->name('cart.add');

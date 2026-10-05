@@ -36,7 +36,10 @@
                         <a class="nav-link active" href="{{ route('products.index') }}">Home</a>
                     </li>
                     <li class="nav-item me-3">
-                        <a class="nav-link" href="#">Cart (0)</a>
+                        <!-- Read directly from session, default to 0 items if cart session is empty or null -->
+                        <a class="nav-link @if(Route::is('cart.index')) active @endif" href="{{ route('cart.index') }}">
+                            Cart ({{ count(session()->get('cart', [])) }})
+                        </a>
                     </li>
 
                     <!-- Check if the user is logged in -->
@@ -110,9 +113,10 @@
                                 <small class="text-muted">Stock: {{ $product->quantity }}</small>
                             </div>
                             <!-- Call to Action Button -->
-                            <button class="btn btn-dark w-100 mt-2" @if($product->quantity <= 0) disabled @endif>
-                                    Add to Cart
-                            </button>
+                            <a href="{{ route('cart.add', ['id' => $product->id]) }}"
+                                class="btn btn-dark w-100 mt-2 @if($product->quantity <= 0) disabled @endif">
+                                Add to Cart
+                            </a>
                         </div>
                     </div>
                 </div>

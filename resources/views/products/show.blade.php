@@ -25,7 +25,10 @@
                         <a class="nav-link active" href="{{ route('products.index') }}">Home</a>
                     </li>
                     <li class="nav-item me-3">
-                        <a class="nav-link" href="#">Cart (0)</a>
+                        <!-- Read directly from session, default to 0 items if cart session is empty or null -->
+                        <a class="nav-link @if(Route::is('cart.index')) active @endif" href="{{ route('cart.index') }}">
+                            Cart ({{ count(session()->get('cart', [])) }})
+                        </a>
                     </li>
 
                     <!-- Check if the user is logged in -->
@@ -104,9 +107,10 @@
 
                     <!-- Action Area Buttons -->
                     <div class="d-grid gap-2 d-md-flex">
-                        <button class="btn btn-dark btn-lg px-5 py-3" @if($product->quantity <= 0) disabled @endif>
-                                Add to Cart
-                        </button>
+                        <a href="{{ route('cart.add', ['id' => $product->id]) }}"
+                            class="btn btn-dark w-100 mt-2 @if($product->quantity <= 0) disabled @endif">
+                            Add to Cart
+                        </a>
                         <button class="btn btn-outline-dark btn-lg px-4" href="#">
                             Add to Wishlist
                         </button>
