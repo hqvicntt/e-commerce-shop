@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\Product;
+use App\Models\Order;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\RedirectResponse;
 
 class CartController extends Controller
@@ -53,5 +55,50 @@ class CartController extends Controller
         session()->put('cart', $cart);
 
         return redirect()->back()->with('success', 'Product added to cart successfully!');
+    }
+
+    /**
+     * Process the order checkout logic.
+     * 
+     * @param Request $request
+     * @return RedirectResponse
+     */
+    public function checkout(Request $request): RedirectResponse
+    {
+        // Enforce security: user must be logged in to checkout
+        if (!Auth::check()) {
+            return redirect()->route('login')->with('error', 'Please sign in to place an order.');
+        }
+
+        // Fetch the cart item array from session
+        $cart = session()->get('cart', []);
+        if (empty($cart)) {
+            return redirect()->route('products.index')->with('error', 'Your cart is empty.');
+        }
+
+        // Compile product names and compute the grand total price
+        $productNamesArray = [];
+        $totalPrice = 0;
+
+        foreach ($cart as $item) {
+            $productNamesArray[] = $item['name'] . ' (x' . $item['quantity'] . ')';
+            $totalPrice += $item['price'] * $item['quantity'];
+        }
+
+        // Convert the array into a clean readable string (e.g., "iPhone (x2), iPad (x1)")
+        $productNamesString = implode(', ', $productNamesArray);
+
+        // Create and store the order record into MySQL database
+        Order::create([
+            'user_id' => Auth::id(), // Get current logged-in user ID
+            'product_names' => $productNamesString,
+            'total_price' => $totalPrice,
+            'status' => 'pending',
+        ]);
+
+        // Clear the shopping cart session after successful purchase
+        session()->forget('cart');
+
+        return redirect()->route('products.index')->with('success', 'Order placed successfully! Thank you for shopping with us.');
     }
 }

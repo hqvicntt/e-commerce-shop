@@ -71,6 +71,22 @@
 
     <!-- Main Content Container -->
     <div class="container my-5">
+
+        <!-- Display Global Success/Error Alerts -->
+        @if(session('success'))
+            <div class="alert alert-success alert-dismissible fade show border-0 shadow-sm mb-4" role="alert">
+                <span class="fw-semibold">{{ session('success') }}</span>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        @endif
+        
+        @if(session('error'))
+            <div class="alert alert-danger alert-dismissible fade show border-0 shadow-sm mb-4" role="alert">
+                <span class="fw-semibold">{{ session('error') }}</span>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        @endif
+
         <h1 class="text-center fw-bold mb-4">Our Products</h1>
         <p class="text-muted text-center mb-5">Explore our wide range of high-quality items filtered specially for you.
         </p>

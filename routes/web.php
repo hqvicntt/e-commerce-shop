@@ -33,7 +33,13 @@ Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
 // Route for adding a product to the cart
 Route::get('/cart/add/{id}', [CartController::class, 'add'])->name('cart.add');
 
-// Route group protected by 'auth' and 'admin' middleware
+// Route group protected by 'auth' middleware (Requires authentication (Accessible by both regular users and admins))
+Route::middleware(['auth'])->group(function () {
+    // Route for processing the checkout request
+    Route::post('/checkout', [CartController::class, 'checkout'])->name('cart.checkout');
+});
+
+// Route group protected by 'auth' and 'admin' middleware (Requires authentication and admin role verification)
 Route::middleware(['auth', 'admin'])->group(function () {
 
     // Admin Dashboard Page

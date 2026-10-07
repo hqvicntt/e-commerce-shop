@@ -121,7 +121,12 @@
                         <span class="fs-5 fw-bold">Total</span>
                         <span class="fs-5 fw-bold text-primary">${{ number_format($total, 2) }}</span>
                     </div>
-                    <button class="btn btn-dark w-100 py-3 fw-bold mb-2">Proceed to Checkout</button>
+                    <form action="{{ route('cart.checkout') }}" method="POST">
+                        @csrf
+                        <button type="submit" class="btn btn-dark w-100 py-3 fw-bold mb-2">
+                            Proceed to Checkout
+                        </button>
+                    </form>
                     <a href="{{ route('products.index') }}" class="btn btn-outline-secondary w-100 py-2">Continue
                         Shopping</a>
                 </div>
