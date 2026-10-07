@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Product;
 use App\Models\Category;
+use App\Models\Order;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 use Illuminate\Http\RedirectResponse;
@@ -137,5 +138,18 @@ class AdminController extends Controller
 
         // 3. Redirect back to admin dashboard with a success message
         return redirect()->route('admin.dashboard')->with('success', 'Product deleted successfully!');
+    }
+
+    /**
+     * Display a listing of all customer orders.
+     * 
+     * @return View
+     */
+    public function orders(): View
+    {
+        // Fetch all orders with their related users to prevent N+1 query issues
+        $orders = Order::with('user')->latest()->get();
+
+        return view('admin.orders.index', compact('orders'));
     }
 }

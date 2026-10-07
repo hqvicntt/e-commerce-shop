@@ -59,4 +59,7 @@ Route::middleware(['auth', 'admin'])->group(function () {
 
     // Delete Product Process
     Route::post('/admin/products/delete/{id}', [AdminController::class, 'destroy'])->name('admin.products.destroy');
+
+    // Route for viewing the admin's order list
+    Route::get('/admin/orders', [AdminController::class, 'orders'])->name('admin.orders.index');
 });
