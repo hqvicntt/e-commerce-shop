@@ -29,21 +29,25 @@ class AuthController extends Controller
      */
     public function storeRegister(Request $request): RedirectResponse
     {
-        // 1. Validate the form input data
+        // Validate the form input data
         $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
             'password' => 'required|string|min:8|confirmed', // Must match password_confirmation field
         ]);
 
-        // 2. Create and save the new user into MySQL database
-        User::create([
+        // Create the new user record in the database and assign it to a variable 
+        $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password), // Encrypt the password for security
+            'role' => 'user', // Default role is 'user'
         ]);
 
-        // 3. Redirect to login page with a success message
+        // Automatically log in the newly created user session
+        Auth::login($user);
+
+        // Redirect to login page with a success message
         return redirect()->route('products.index')->with('success', 'Account created successfully!');
     }
 

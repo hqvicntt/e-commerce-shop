@@ -14,6 +14,21 @@ class Product extends Model
     use HasFactory;
 
     /**
+     * The attributes that are mass assignable.
+     *
+     * @var list<string>
+     */
+    protected $fillable = [
+        'category_id',
+        'name',
+        'slug',
+        'price',
+        'quantity',
+        'description',
+        'is_active',
+    ];
+
+    /**
      * Get the category that owns the product.
      * 
      * @return BelongsTo
