@@ -72,6 +72,7 @@
                             <th scope="col">Price</th>
                             <th scope="col">Stock</th>
                             <th scope="col">Status</th>
+                            <th scope="col" style="width: 180px;">Actions</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -99,6 +100,20 @@
                                 @else
                                 <span class="badge bg-secondary-subtle text-secondary px-2 py-1">Inactive</span>
                                 @endif
+                            </td>
+                            <td>
+                                <!-- Edit Button Link -->
+                                <a href="{{ route('admin.products.edit', ['id' => $product->id]) }}" class="btn btn-sm btn-outline-dark fw-semibold me-1">
+                                    Edit
+                                </a>
+
+                                <!-- Delete Action Form (Using POST method with an inline confirmation alert) -->
+                                <form action="{{ route('admin.products.destroy', ['id' => $product->id]) }}" method="POST" class="d-inline" onsubmit="return confirm('Are you sure you want to delete this product?');">
+                                    @csrf
+                                    <button type="submit" class="btn btn-sm btn-outline-danger fw-semibold">
+                                        Delete
+                                    </button>
+                                </form>
                             </td>
                         </tr>
                         @empty

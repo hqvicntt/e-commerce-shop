@@ -68,4 +68,74 @@ class AdminController extends Controller
         // Redirect back to admin dashboard with a success message
         return redirect()->route('admin.dashboard')->with('success', 'Product created successfully!');
     }
+
+    /**
+     * Show the form for editing the specified product.
+     * 
+     * @param int $id
+     * @return View
+     */
+    public function edit(int $id): View
+    {
+        // Find the product by its ID or throw a 404 error
+        $product = Product::findOrFail($id);
+
+        // Fetch all categories to populate the dropdown select menu
+        $categories = Category::all();
+
+        return view('admin.products.edit', compact('product', 'categories'));
+    }
+
+    /**
+     * Update the specified product in the database.
+     * 
+     * @param Request $request
+     * @param int $id
+     * @return RedirectResponse
+     */
+    public function update(Request $request, int $id): RedirectResponse
+    {
+        // 1. Find the existing product or fail with 404
+        $product = Product::findOrFail($id);
+
+        // 2. Validate the incoming updated product form data
+        $request->validate([
+            'category_id' => 'required|exists:categories,id',
+            'name' => 'required|string|max:255',
+            'price' => 'required|numeric|min:0',
+            'quantity' => 'required|integer|min:0',
+            'description' => 'nullable|string',
+        ]);
+
+        // 3. Update the product record with new data using mass assignment
+        $product->update([
+            'category_id' => $request->category_id,
+            'name' => $request->name,
+            'slug' => Str::slug($request->name), // Re-generate slug if name changed
+            'price' => $request->price,
+            'quantity' => $request->quantity,
+            'description' => $request->description,
+        ]);
+
+        // 4. Redirect back to admin dashboard with a success message
+        return redirect()->route('admin.dashboard')->with('success', 'Product updated successfully!');
+    }
+
+    /**
+     * Remove the specified product from the database.
+     * 
+     * @param int $id
+     * @return RedirectResponse
+     */
+    public function destroy(int $id): RedirectResponse
+    {
+        // 1. Find the product or fail with 404
+        $product = Product::findOrFail($id);
+
+        // 2. Delete the product record from MySQL database
+        $product->delete();
+
+        // 3. Redirect back to admin dashboard with a success message
+        return redirect()->route('admin.dashboard')->with('success', 'Product deleted successfully!');
+    }
 }

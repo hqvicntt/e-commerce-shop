@@ -44,4 +44,13 @@ Route::middleware(['auth', 'admin'])->group(function () {
 
     // Store New Product Process
     Route::post('/admin/products/create', [AdminController::class, 'store'])->name('admin.products.store');
+
+    // Show Edit Product Form
+    Route::get('/admin/products/edit/{id}', [AdminController::class, 'edit'])->name('admin.products.edit');
+
+    // Update Product Process
+    Route::post('/admin/products/edit/{id}', [AdminController::class, 'update'])->name('admin.products.update');
+
+    // Delete Product Process
+    Route::post('/admin/products/delete/{id}', [AdminController::class, 'destroy'])->name('admin.products.destroy');
 });
