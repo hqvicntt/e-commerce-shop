@@ -171,6 +171,9 @@
             @endforeach
 
         </div>
+        <div class="d-flex justify-content-center mt-5">
+            {{ $products->links() }}
+        </div>
     </div>
 
     <!-- Include Bootstrap 5 JS Bundle via CDN -->

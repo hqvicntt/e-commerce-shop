@@ -17,25 +17,25 @@ class ProductController extends Controller
      */
     public function index(Request $request): View
     {
-        // 1. Fetch all categories to populate the filter dropdown sidebar/topbar
+        // Fetch all categories to populate the filter dropdown sidebar/topbar
         $categories = Category::all();
 
-        // 2. Initialize the dynamic query builder for Product model with its relationship
+        // Initialize the dynamic query builder for Product model with its relationship
         $query = Product::with('category')->where('is_active', true);
 
-        // 3. Apply keyword search filter if present in request query string
+        // Apply keyword search filter if present in request query string
         if ($request->filled('keyword')) {
             $keyword = $request->keyword;
             $query->where('name', 'LIKE', '%' . $keyword . '%');
         }
 
-        // 4. Apply category filter if present in request query string
+        // Apply category filter if present in request query string
         if ($request->filled('category_id')) {
             $query->where('category_id', $request->category_id);
         }
 
-        // 5. Execute the query and fetch the filtered list ordered by latest
-        $products = $query->latest()->get();
+        // Execute the query and fetch the filtered list with pagination (12 items per page)
+        $products = $query->latest()->paginate(12)->withQueryString();
 
         // Pass the products data to the view named 'products.index'
         return view('products.index', compact('products', 'categories'));
