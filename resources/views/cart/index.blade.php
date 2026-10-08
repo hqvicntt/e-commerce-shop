@@ -85,10 +85,7 @@
                                 <tr>
                                     <td>
                                         <div class="d-flex align-items-center">
-                                            <img src="https://placehold.co/600x400/png?text=Hello+World&font=roboto"
-                                                class="img-fluid rounded me-3"
-                                                style="width: 60px; height: 40px; object-fit: cover;"
-                                                alt="{{ $item['name'] }}">
+                                            <img src="{{ $item['image'] ? asset('storage/' . $item['image']) : 'https://placehold.co/600x400/png?text=Hello+World&font=roboto' }}" class="img-fluid rounded me-3" style="width: 60px; height: 40px; object-fit: cover;" alt="{{ $item['name'] }}">
                                             <span class="fw-semibold text-dark">{{ $item['name'] }}</span>
                                         </div>
                                     </td>

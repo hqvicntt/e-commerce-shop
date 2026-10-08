@@ -91,8 +91,11 @@
 
                 <!-- Left Column: Product Image -->
                 <div class="col-md-6 text-center">
-                    <img src="https://placehold.co/600x400/png?text=Hello+World&font=roboto"
-                        class="img-fluid rounded shadow-sm" alt="{{ $product->name }}">
+                    @if($product->image)
+                        <img src="{{ asset('storage/' . $product->image) }}" class="img-fluid rounded shadow-sm w-100" style="max-height: 400px; object-fit: cover;" alt="{{ $product->name }}">
+                    @else
+                        <img src="https://placehold.co/600x400/png?text=Hello+World&font=roboto" class="img-fluid rounded shadow-sm w-100" style="max-height: 400px; object-fit: cover;" alt="{{ $product->name }}">
+                    @endif
                 </div>
 
                 <!-- Right Column: Product Information -->

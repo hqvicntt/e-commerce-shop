@@ -80,7 +80,10 @@
                         <tr>
                             <td class="fw-bold text-muted">#{{ $product->id }}</td>
                             <td>
-                                <span class="fw-semibold text-dark">{{ $product->name }}</span>
+                                <div class="d-flex align-items-center">
+                                    <img src="{{ $product->image ? asset('storage/' . $product->image) : 'https://placehold.co/600x400/png?text=Hello+World&font=roboto' }}" class="img-fluid rounded me-3" style="width: 50px; height: 35px; object-fit: cover;" alt="{{ $product->name }}">
+                                    <span class="fw-semibold text-dark">{{ $product->name }}</span>
+                                </div>
                             </td>
                             <td>
                                 <!-- Display category name efficiently via Eager Loading -->

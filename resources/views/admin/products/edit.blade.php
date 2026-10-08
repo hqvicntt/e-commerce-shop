@@ -47,7 +47,7 @@
                         <p class="text-muted mb-4">Modify the parameters below to update this inventory item details.</p>
 
                         <!-- Product Edit Form Element sending POST request to update route -->
-                        <form action="{{ route('admin.products.update', ['id' => $product->id]) }}" method="POST">
+                        <form action="{{ route('admin.products.update', ['id' => $product->id]) }}" method="POST" enctype="multipart/form-data">
                             @csrf
 
                             <!-- Product Name Input -->
@@ -100,6 +100,14 @@
                                 <label for="description" class="form-label fw-semibold">Product Description</label>
                                 <textarea class="form-control @error('description') is-invalid @enderror" id="description" name="description" rows="5" placeholder="Write detailed product parameters and specifications here...">{{ old('description', $product->description) }}</textarea>
                                 @error('description')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+
+                            <div class="mb-4">
+                                <label for="image" class="form-label fw-semibold">Product Image (Leave blank to keep current image)</label>
+                                <input type="file" class="form-control @error('image') is-invalid @enderror" id="image" name="image">
+                                @error('image')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
                             </div>

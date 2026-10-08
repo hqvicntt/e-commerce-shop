@@ -26,6 +26,7 @@ class Product extends Model
         'quantity',
         'description',
         'is_active',
+        'image',
     ];
 
     /**

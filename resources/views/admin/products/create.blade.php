@@ -50,7 +50,7 @@
                             front.</p>
 
                         <!-- Product Form Element sending POST request to store route -->
-                        <form action="{{ route('admin.products.store') }}" method="POST">
+                        <form action="{{ route('admin.products.store') }}" method="POST" enctype="multipart/form-data">
                             @csrf
 
                             <!-- Product Name Input -->
@@ -113,6 +113,15 @@
                                     placeholder="Write detailed product parameters and specifications here...">{{ old('description') }}</textarea>
                                 @error('description')
                                 <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+
+                            <!-- Product Image File Input Group -->
+                            <div class="mb-4">
+                                <label for="image" class="form-label fw-semibold">Product Image</label>
+                                <input type="file" class="form-control @error('image') is-invalid @enderror" id="image" name="image">
+                                @error('image')
+                                    <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
                             </div>
 

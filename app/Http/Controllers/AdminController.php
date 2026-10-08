@@ -53,7 +53,17 @@ class AdminController extends Controller
             'price' => 'required|numeric|min:0',
             'quantity' => 'required|integer|min:0',
             'description' => 'nullable|string',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
+
+        // Initialize image path as null
+        $imagePath = null;
+
+        // Handle file upload if an image file is present in the request
+        if ($request->hasFile('image')) {
+            // Store the file in 'storage/app/public/products' directory inside storage folder
+            $imagePath = $request->file('image')->store('products', 'public');
+        }
 
         // Create the new product record in the database
         Product::create([
@@ -63,6 +73,7 @@ class AdminController extends Controller
             'price' => $request->price,
             'quantity' => $request->quantity,
             'description' => $request->description,
+            'image' => $imagePath,
             'is_active' => true, // Default to true
         ]);
 
@@ -96,19 +107,29 @@ class AdminController extends Controller
      */
     public function update(Request $request, int $id): RedirectResponse
     {
-        // 1. Find the existing product or fail with 404
+        // Find the existing product or fail with 404
         $product = Product::findOrFail($id);
 
-        // 2. Validate the incoming updated product form data
+        // Validate the incoming updated product form data
         $request->validate([
             'category_id' => 'required|exists:categories,id',
             'name' => 'required|string|max:255',
             'price' => 'required|numeric|min:0',
             'quantity' => 'required|integer|min:0',
             'description' => 'nullable|string',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
-        // 3. Update the product record with new data using mass assignment
+        // Retain the old image path by default
+        $imagePath = $product->image;
+
+        // Handle file upload if a new image file is provided
+        if ($request->hasFile('image')) {
+            // Optional: You could delete the old file from storage here if needed
+            $imagePath = $request->file('image')->store('products', 'public');
+        }
+
+        // Update the product record with new data using mass assignment
         $product->update([
             'category_id' => $request->category_id,
             'name' => $request->name,
@@ -116,9 +137,10 @@ class AdminController extends Controller
             'price' => $request->price,
             'quantity' => $request->quantity,
             'description' => $request->description,
+            'image' => $imagePath,
         ]);
 
-        // 4. Redirect back to admin dashboard with a success message
+        // Redirect back to admin dashboard with a success message
         return redirect()->route('admin.dashboard')->with('success', 'Product updated successfully!');
     }
 
@@ -130,13 +152,13 @@ class AdminController extends Controller
      */
     public function destroy(int $id): RedirectResponse
     {
-        // 1. Find the product or fail with 404
+        // Find the product or fail with 404
         $product = Product::findOrFail($id);
 
-        // 2. Delete the product record from MySQL database
+        // Delete the product record from MySQL database
         $product->delete();
 
-        // 3. Redirect back to admin dashboard with a success message
+        // Redirect back to admin dashboard with a success message
         return redirect()->route('admin.dashboard')->with('success', 'Product deleted successfully!');
     }
 
