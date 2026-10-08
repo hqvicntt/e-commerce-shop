@@ -201,4 +201,30 @@ class AdminController extends Controller
         // Redirect back to edit page with a success flash alert
         return redirect()->back()->with('success', 'Product image removed successfully!');
     }
+
+    /**
+     * Update the status of a specific customer order.
+     * 
+     * @param Request $request
+     * @param int $id
+     * @return RedirectResponse
+     */
+    public function updateStatus(Request $request, int $id): RedirectResponse
+    {
+        // Find the existing order record or fail with a 404 error
+        $order = Order::findOrFail($id);
+
+        // Validate that the incoming status value is within the allowed scope
+        $request->validate([
+            'status' => 'required|in:pending,completed,cancelled',
+        ]);
+
+        // Update the order status column in MySQL database
+        $order->update([
+            'status' => $request->status,
+        ]);
+
+        // Redirect back to orders listing with a success flash alert
+        return redirect()->route('admin.orders.index')->with('success', 'Order status updated successfully!');
+    }
 }

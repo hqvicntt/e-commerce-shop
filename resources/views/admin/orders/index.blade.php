@@ -41,6 +41,14 @@
 
     <!-- Main Content Container -->
     <div class="container my-5">
+
+        <!-- Display Global Success/Error Alerts for Admin Orders -->
+        @if(session('success'))
+            <div class="alert alert-success alert-dismissible fade show border-0 shadow-sm mb-4" role="alert">
+                <span class="fw-semibold">{{ session('success') }}</span>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        @endif
         
         <div class="d-flex justify-content-between align-items-center mb-4">
             <div>
@@ -89,13 +97,38 @@
                                     </small>
                                 </td>
                                 <td>
-                                    <!-- Conditional color styling based on order status text parameters -->
+                                    <!-- Display current status badge -->
+                                    <div class="mb-2">
+                                        @if($order->status === 'pending')
+                                            <span class="badge bg-warning text-dark px-3 py-2 fw-bold text-uppercase">Pending</span>
+                                        @elseif($order->status === 'completed')
+                                            <span class="badge bg-success px-3 py-2 fw-bold text-uppercase">Completed</span>
+                                        @else
+                                            <span class="badge bg-danger px-3 py-2 fw-bold text-uppercase">Cancelled</span>
+                                        @endif
+                                    </div>
+
+                                    <!-- Quick Action Buttons: Only display if the order status is currently pending -->
                                     @if($order->status === 'pending')
-                                        <span class="badge bg-warning text-dark px-3 py-2 fw-bold text-uppercase">Pending</span>
-                                    @elseif($order->status === 'completed')
-                                        <span class="badge bg-success px-3 py-2 fw-bold text-uppercase">Completed</span>
-                                    @else
-                                        <span class="badge bg-danger px-3 py-2 fw-bold text-uppercase">Cancelled</span>
+                                        <div class="d-flex gap-1">
+                                            <!-- Complete Action Form -->
+                                            <form action="{{ route('admin.orders.update_status', ['id' => $order->id]) }}" method="POST" onsubmit="return confirm('Mark this order as COMPLETED?');">
+                                                @csrf
+                                                <input type="hidden" name="status" value="completed">
+                                                <button type="submit" class="btn btn-xs btn-success fw-bold text-white" style="font-size: 11px; padding: 2px 6px;">
+                                                    Done
+                                                </button>
+                                            </form>
+
+                                            <!-- Cancel Action Form -->
+                                            <form action="{{ route('admin.orders.update_status', ['id' => $order->id]) }}" method="POST" onsubmit="return confirm('Are you sure you want to CANCEL this order?');">
+                                                @csrf
+                                                <input type="hidden" name="status" value="cancelled">
+                                                <button type="submit" class="btn btn-xs btn-outline-danger fw-bold" style="font-size: 11px; padding: 2px 6px;">
+                                                    Cancel
+                                                </button>
+                                            </form>
+                                        </div>
                                     @endif
                                 </td>
                             </tr>

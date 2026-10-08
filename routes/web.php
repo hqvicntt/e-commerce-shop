@@ -68,4 +68,7 @@ Route::middleware(['auth', 'admin'])->group(function () {
 
     // Delete individual product image route
     Route::post('/admin/products/edit/{id}/delete-image', [AdminController::class, 'deleteImage'])->name('admin.products.delete_image');
+
+    // Update order status process route
+    Route::post('/admin/orders/update-status/{id}', [AdminController::class, 'updateStatus'])->name('admin.orders.update_status');
 });
