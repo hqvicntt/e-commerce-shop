@@ -87,6 +87,37 @@
             </div>
         @endif
 
+        <!-- Search and Filter Navigation Bar Row -->
+        <div class="card border-0 shadow-sm p-3 mb-5 bg-white rounded">
+            <form action="{{ route('products.index') }}" method="GET" class="row g-3 align-items-center">
+                
+                <!-- Keyword Input Field Container -->
+                <div class="col-md-5">
+                    <input type="text" name="keyword" class="form-control" value="{{ request('keyword') }}" placeholder="Search products by name...">
+                </div>
+
+                <!-- Category Dropdown Filter Container -->
+                <div class="col-md-4">
+                    <select name="category_id" class="form-select">
+                        <option value="">All Categories</option>
+                        @foreach($categories as $category)
+                            <option value="{{ $category->id }}" {{ request('category_id') == $category->id ? 'selected' : '' }}>
+                                {{ $category->name }}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
+
+                <!-- Search Submit Action Button Container -->
+                <div class="col-md-3 d-grid gap-2 d-md-flex">
+                    <button type="submit" class="btn btn-dark w-100 fw-bold">Search</button>
+                    <!-- Reset Button link to clear filters -->
+                    <a href="{{ route('products.index') }}" class="btn btn-outline-secondary w-100 fw-semibold">Clear</a>
+                </div>
+
+            </form>
+        </div>
+
         <h1 class="text-center fw-bold mb-4">Our Products</h1>
         <p class="text-muted text-center mb-5">Explore our wide range of high-quality items filtered specially for you.
         </p>
