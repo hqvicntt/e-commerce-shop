@@ -91,11 +91,9 @@
 
                 <!-- Left Column: Product Image -->
                 <div class="col-md-6 text-center">
-                    @if($product->image)
-                        <img src="{{ asset('storage/' . $product->image) }}" class="img-fluid rounded shadow-sm w-100" style="max-height: 400px; object-fit: cover;" alt="{{ $product->name }}">
-                    @else
-                        <img src="https://placehold.co/600x400/png?text=Hello+World&font=roboto" class="img-fluid rounded shadow-sm w-100" style="max-height: 400px; object-fit: cover;" alt="{{ $product->name }}">
-                    @endif
+                    <a href="{{ $product->image ? asset('storage/' . $product->image) : 'https://placehold.co/600x400/png?text=Hello+World&font=roboto' }}" target="_blank">
+                        <img src="{{ $product->image ? asset('storage/' . $product->image) : 'https://placehold.co/600x400/png?text=Hello+World&font=roboto' }}" class="img-fluid rounded shadow-sm w-100" style="max-height: 400px; object-fit: cover; cursor: pointer;" alt="{{ $product->name }}">
+                    </a>
                 </div>
 
                 <!-- Right Column: Product Information -->

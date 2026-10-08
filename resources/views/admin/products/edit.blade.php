@@ -104,9 +104,35 @@
                                 @enderror
                             </div>
 
+                            <!-- Product Image Input Group with Preview and Delete Action -->
                             <div class="mb-4">
-                                <label for="image" class="form-label fw-semibold">Product Image (Leave blank to keep current image)</label>
-                                <input type="file" class="form-control @error('image') is-invalid @enderror" id="image" name="image">
+                                <label for="image" class="form-label fw-semibold">Product Image</label>
+                                
+                                <!-- Image Preview Container if image exists in database -->
+                                @if($product->image)
+                                    <div class="mb-3">
+                                        <p class="text-muted small mb-2">Current image preview (Click on image to open in new tab):</p>
+                                        <!-- Design a relative wrapper box for absolute X button styling -->
+                                        <div class="position-relative d-inline-block">
+                                            <!-- Wrap image in <a> tag with target="_blank" to open in a new tab -->
+                                            <a href="{{ asset('storage/' . $product->image) }}" target="_blank">
+                                                <img src="{{ asset('storage/' . $product->image) }}" class="img-thumbnail rounded shadow-sm" style="width: 150px; height: 110px; object-fit: cover; cursor: zoom-in;" alt="{{ $product->name }}">
+                                            </a>
+                                            
+                                            <!-- Absolute badge style for delete form anchor button -->
+                                            <button type="button" onclick="if(confirm('Are you sure you want to delete this file?')) { document.getElementById('deleteImageForm').submit(); }" class="btn btn-danger btn-sm rounded-circle position-absolute top-0 start-100 translate-middle p-0" style="width: 22px; height: 22px; font-size: 11px; font-weight: bold; line-height: 20px; text-align: center;" title="Remove image">
+                                                X
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <input type="file" class="form-control @error('image') is-invalid @enderror" id="image" name="image" placeholder="Upload a new image to replace current one">
+                                @else
+                                    <div class="mb-3">
+                                        <img src="https://placehold.co/600x400/png?text=Hello+World&font=roboto" class="img-thumbnail rounded" style="width: 150px; height: 110px; object-fit: cover;" alt="No Image Available">
+                                    </div>
+                                    <input type="file" class="form-control @error('image') is-invalid @enderror" id="image" name="image">
+                                @endif
+                                
                                 @error('image')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
@@ -122,6 +148,10 @@
             </div>
         </div>
     </div>
+
+    <form id="deleteImageForm" action="{{ route('admin.products.delete_image', ['id' => $product->id]) }}" method="POST" style="display: none;">
+        @csrf
+    </form>
 
     <!-- Include Bootstrap 5 JS Bundle via CDN -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"

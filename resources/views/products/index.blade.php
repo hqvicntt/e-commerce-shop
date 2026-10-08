@@ -134,12 +134,9 @@
                 <!-- Individual Product Card -->
                 <div class="card h-100 border-0 shadow-sm product-card">
                     <!-- Check if product has an uploaded image file path -->
-                    @if($product->image && view()->exists('products.index'))
-                        <img src="{{ asset('storage/' . $product->image) }}" class="card-img-top" style="height: 200px; object-fit: cover;" alt="{{ $product->name }}">
-                    @else
-                        <!-- Fallback template placeholder image if no file uploaded -->
-                        <img src="https://placehold.co/600x400/png?text=Hello+World&font=roboto" class="card-img-top" style="height: 200px; object-fit: cover;" alt="{{ $product->name }}">
-                    @endif
+                    <a href="{{ $product->image ? asset('storage/' . $product->image) : 'https://placehold.co/600x400/png?text=Hello+World&font=roboto' }}" target="_blank">
+                        <img src="{{ $product->image ? asset('storage/' . $product->image) : 'https://placehold.co/600x400/png?text=Hello+World&font=roboto' }}" class="card-img-top" style="height: 200px; object-fit: cover; cursor: pointer;" alt="{{ $product->name }}">
+                    </a>
 
                     <!-- Card Body Container -->
                     <div class="card-body d-flex flex-column">

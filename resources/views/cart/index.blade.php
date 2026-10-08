@@ -85,7 +85,9 @@
                                 <tr>
                                     <td>
                                         <div class="d-flex align-items-center">
-                                            <img src="{{ $item['image'] ? asset('storage/' . $item['image']) : 'https://placehold.co/600x400/png?text=Hello+World&font=roboto' }}" class="img-fluid rounded me-3" style="width: 60px; height: 40px; object-fit: cover;" alt="{{ $item['name'] }}">
+                                            <a href="{{ $item['image'] ? asset('storage/' . $item['image']) : 'https://placehold.co/600x400/png?text=Hello+World&font=roboto' }}" target="_blank">
+                                                <img src="{{ $item['image'] ? asset('storage/' . $item['image']) : 'https://placehold.co/600x400/png?text=Hello+World&font=roboto' }}" class="img-fluid rounded me-3" style="width: 60px; height: 40px; object-fit: cover;" alt="{{ $item['name'] }}">
+                                            </a>
                                             <span class="fw-semibold text-dark">{{ $item['name'] }}</span>
                                         </div>
                                     </td>

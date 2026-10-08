@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use Illuminate\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Storage;
 
 class AdminController extends Controller
 {
@@ -173,5 +174,31 @@ class AdminController extends Controller
         $orders = Order::with('user')->latest()->get();
 
         return view('admin.orders.index', compact('orders'));
+    }
+
+    /**
+     * Delete the product image from storage and database.
+     * 
+     * @param int $id
+     * @return RedirectResponse
+     */
+    public function deleteImage(int $id): RedirectResponse
+    {
+        // Find the product or throw a 404 error
+        $product = Product::findOrFail($id);
+
+        // Check if the product actually has an image file path stored
+        if ($product->image) {
+            // Delete the physical file from the public storage disk
+            Storage::disk('public')->delete($product->image);
+        }
+
+        // Update the database column to NULL using mass assignment
+        $product->update([
+            'image' => null
+        ]);
+
+        // Redirect back to edit page with a success flash alert
+        return redirect()->back()->with('success', 'Product image removed successfully!');
     }
 }

@@ -65,4 +65,7 @@ Route::middleware(['auth', 'admin'])->group(function () {
 
     // Route for viewing the admin's order list
     Route::get('/admin/orders', [AdminController::class, 'orders'])->name('admin.orders.index');
+
+    // Delete individual product image route
+    Route::post('/admin/products/edit/{id}/delete-image', [AdminController::class, 'deleteImage'])->name('admin.products.delete_image');
 });
