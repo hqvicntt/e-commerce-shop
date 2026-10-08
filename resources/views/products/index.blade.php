@@ -44,6 +44,10 @@
 
                     <!-- Check if the user is logged in -->
                     @auth
+                    <!-- Display "My Orders" link for authenticated users -->
+                    <li class="nav-item me-2">
+                        <a class="nav-link @if(Route::is('products.orders')) active @endif" href="{{ route('products.orders') }}">My Orders</a>
+                    </li>
                     <!-- Display authenticated user's name as a welcome greeting -->
                     <li class="nav-item text-white me-3">
                         Welcome, <span class="fw-bold text-warning">{{ Auth::user()->name }}</span>

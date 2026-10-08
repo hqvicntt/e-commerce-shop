@@ -37,6 +37,9 @@ Route::get('/cart/add/{id}', [CartController::class, 'add'])->name('cart.add');
 Route::middleware(['auth'])->group(function () {
     // Route for processing the checkout request
     Route::post('/checkout', [CartController::class, 'checkout'])->name('cart.checkout');
+
+    // Route for displaying the authenticated user's order history
+    Route::get('/my-orders', [ProductController::class, 'orderHistory'])->name('products.orders');
 });
 
 // Route group protected by 'auth' and 'admin' middleware (Requires authentication and admin role verification)
