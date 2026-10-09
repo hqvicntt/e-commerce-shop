@@ -116,10 +116,17 @@
                                 @enderror
                             </div>
 
-                            <!-- Product Image File Input Group -->
+                            <!-- Product Image Input Group with JS Client Preview -->
                             <div class="mb-4">
                                 <label for="image" class="form-label fw-semibold">Product Image</label>
-                                <input type="file" class="form-control @error('image') is-invalid @enderror" id="image" name="image">
+                                
+                                <!-- Placeholder container for JS image preview -->
+                                <div class="mb-3 d-none" id="previewContainer">
+                                    <p class="text-muted small mb-2">Selected image preview:</p>
+                                    <img id="imagePreview" src="#" class="img-thumbnail rounded shadow-sm" style="width: 150px; height: 110px; object-fit: cover;" alt="Image Preview">
+                                </div>
+
+                                <input type="file" class="form-control @error('image') is-invalid @enderror" id="imageInput" name="image" onchange="previewSelectedImage()">
                                 @error('image')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
@@ -139,6 +146,28 @@
     <!-- Include Bootstrap 5 JS Bundle via CDN -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous">
+    </script>
+
+    <!-- JavaScript block inside blade to handle local file reader simulation -->
+    <script>
+        function previewSelectedImage() {
+            const fileInput = document.getElementById('imageInput');
+            const previewContainer = document.getElementById('previewContainer');
+            const imagePreview = document.getElementById('imagePreview');
+
+            // Check if any file is selected by the user
+            if (fileInput.files && fileInput.files[0]) {
+                const fileReader = new FileReader();
+
+                // When the file reader successfully finishes reading the local file
+                fileReader.onload = function(e) {
+                    imagePreview.src = e.target.result; // Set src attributes to file raw data string
+                    previewContainer.classList.remove('d-none'); // Reveal the hidden container
+                }
+
+                fileReader.readAsDataURL(fileInput.files[0]); // Read local file buffer data
+            }
+        }
     </script>
 </body>
 

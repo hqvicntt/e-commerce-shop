@@ -109,30 +109,27 @@
                                 <label for="image" class="form-label fw-semibold">Product Image</label>
                                 
                                 <!-- Image Preview Container if image exists in database -->
-                                @if($product->image)
-                                    <div class="mb-3">
-                                        <p class="text-muted small mb-2">Current image preview (Click on image to open in new tab):</p>
-                                        <!-- Design a relative wrapper box for absolute X button styling -->
-                                        <div class="position-relative d-inline-block">
-                                            <!-- Wrap image in <a> tag with target="_blank" to open in a new tab -->
-                                            <a href="{{ asset('storage/' . $product->image) }}" target="_blank">
-                                                <img src="{{ asset('storage/' . $product->image) }}" class="img-thumbnail rounded shadow-sm" style="width: 150px; height: 110px; object-fit: cover; cursor: zoom-in;" alt="{{ $product->name }}">
+                                <div class="mb-3">
+                                    @if($product->image)
+                                        <p class="text-muted small mb-2" id="previewLabel">Current image preview (Click on image to open in new tab):</p>
+                                        <div class="position-relative d-inline-block" id="previewWrapper">
+                                            <a href="{{ asset('storage/' . $product->image) }}" target="_blank" id="imageAnchor">
+                                                <img id="imagePreview" src="{{ asset('storage/' . $product->image) }}" class="img-thumbnail rounded shadow-sm" style="width: 150px; height: 110px; object-fit: cover; cursor: zoom-in;" alt="{{ $product->name }}">
                                             </a>
                                             
-                                            <!-- Absolute badge style for delete form anchor button -->
-                                            <button type="button" onclick="if(confirm('Are you sure you want to delete this file?')) { document.getElementById('deleteImageForm').submit(); }" class="btn btn-danger btn-sm rounded-circle position-absolute top-0 start-100 translate-middle p-0" style="width: 22px; height: 22px; font-size: 11px; font-weight: bold; line-height: 20px; text-align: center;" title="Remove image">
+                                            <button type="button" id="deleteImageBtn" onclick="if(confirm('Are you sure you want to delete this file ảnh vĩnh viễn?')) { document.getElementById('deleteImageForm').submit(); }" class="btn btn-danger btn-sm rounded-circle position-absolute top-0 start-100 translate-middle p-0" style="width: 22px; height: 22px; font-size: 11px; font-weight: bold; line-height: 20px; text-align: center;" title="Remove image">
                                                 X
                                             </button>
                                         </div>
-                                    </div>
-                                    <input type="file" class="form-control @error('image') is-invalid @enderror" id="image" name="image" placeholder="Upload a new image to replace current one">
-                                @else
-                                    <div class="mb-3">
-                                        <img src="https://placehold.co/600x400/png?text=Hello+World&font=roboto" class="img-thumbnail rounded" style="width: 150px; height: 110px; object-fit: cover;" alt="No Image Available">
-                                    </div>
-                                    <input type="file" class="form-control @error('image') is-invalid @enderror" id="image" name="image">
-                                @endif
+                                    @else
+                                        <div class="mb-3 d-none" id="previewContainer">
+                                            <p class="text-muted small mb-2">Selected image preview:</p>
+                                        </div>
+                                        <img id="imagePreview" src="https://placehold.co" class="img-thumbnail rounded" style="width: 150px; height: 110px; object-fit: cover;" alt="No Image Available">
+                                    @endif
+                                </div>
                                 
+                                <input type="file" class="form-control @error('image') is-invalid @enderror" id="imageInput" name="image" onchange="previewEditImage()">
                                 @error('image')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
@@ -156,6 +153,39 @@
     <!-- Include Bootstrap 5 JS Bundle via CDN -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous">
+    </script>
+
+    <!-- JavaScript block inside edit blade to handle image replacement preview -->
+    <script>
+        function previewEditImage() {
+            const fileInput = document.getElementById('imageInput');
+            const imagePreview = document.getElementById('imagePreview');
+            const previewLabel = document.getElementById('previewLabel');
+            const deleteImageBtn = document.getElementById('deleteImageBtn');
+            const previewContainer = document.getElementById('previewContainer');
+
+            if (fileInput.files && fileInput.files[0]) {
+                const fileReader = new FileReader();
+
+                fileReader.onload = function(e) {
+                    imagePreview.src = e.target.result; // Swap source to the newly selected local file
+                    
+                    // Client styling adjustments if replacing an existing image
+                    if (previewLabel && deleteImageBtn) {
+                        previewLabel.textContent = "New image selected preview (Click disabled until saved):";
+                        deleteImageBtn.classList.add('d-none'); // Hide delete button as file is being replaced
+                        document.getElementById('imageAnchor').removeAttribute('target');
+                        document.getElementById('imageAnchor').removeAttribute('href'); // Temporarily lock link
+                    }
+                    
+                    if (previewContainer) {
+                        previewContainer.classList.remove('d-none'); // Show container for products without old images
+                    }
+                }
+
+                fileReader.readAsDataURL(fileInput.files[0]);
+            }
+        }
     </script>
 </body>
 </html>
