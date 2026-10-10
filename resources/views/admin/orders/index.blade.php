@@ -79,7 +79,11 @@
                         <!-- Loop through each order entry using forelse for defensive coding -->
                         @forelse($orders as $order)
                             <tr>
-                                <td class="fw-bold text-muted">#{{ $order->id }}</td>
+                                <td>
+                                    <a href="{{ route('admin.orders.show', ['id' => $order->id]) }}" class="fw-bold text-decoration-none text-primary" title="Click to view details invoice sheet">
+                                        #{{ $order->id }}
+                                    </a>
+                                </td>
                                 <td>
                                     <!-- Safely fetch buyer name via Eager Loading relationship -->
                                     <span class="fw-semibold text-dark">{{ $order->user->name }}</span>
