@@ -40,6 +40,12 @@ Route::middleware(['auth'])->group(function () {
 
     // Route for displaying the authenticated user's order history
     Route::get('/my-orders', [ProductController::class, 'orderHistory'])->name('products.orders');
+
+    // Route for displaying the profile edit form
+    Route::get('/profile', [AuthController::class, 'editProfile'])->name('profile.edit');
+
+    // Route for processing the profile update request
+    Route::post('/profile', [AuthController::class, 'updateProfile'])->name('profile.update');
 });
 
 // Route group protected by 'auth' and 'admin' middleware (Requires authentication and admin role verification)

@@ -38,8 +38,10 @@
                         <a class="nav-link @if(Route::is('products.orders')) active @endif" href="{{ route('products.orders') }}">My Orders</a>
                     </li>
                     <!-- Display authenticated user's name as a welcome greeting -->
-                    <li class="nav-item text-white me-3">
-                        Welcome, <span class="fw-bold text-warning">{{ Auth::user()->name }}</span>
+                    <li class="nav-item me-3">
+                        <a class="nav-link @if(Route::is('profile.edit')) active fw-bold text-warning @endif" href="{{ route('profile.edit') }}">
+                            Hello, {{ Auth::user()->name }}
+                        </a>
                     </li>
                     <!-- Logout Form (Must use POST method for security) -->
                     <li class="nav-item">
