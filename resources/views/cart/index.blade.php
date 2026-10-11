@@ -29,8 +29,10 @@
                         <a class="nav-link active" href="{{ route('cart.index') }}">Cart ({{ count($cart) }})</a>
                     </li>
                     @auth
-                    <li class="nav-item text-white me-3">
-                        Welcome, <span class="fw-bold text-warning">{{ Auth::user()->name }}</span>
+                    <li class="nav-item me-3">
+                        <a class="nav-link @if(Route::is('profile.edit')) active fw-bold text-warning @endif" href="{{ route('profile.edit') }}">
+                            Hello, {{ Auth::user()->name }}
+                        </a>
                     </li>
                     <li class="nav-item">
                         <form action="{{ route('logout') }}" method="POST" class="d-inline">

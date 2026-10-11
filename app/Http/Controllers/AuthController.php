@@ -110,4 +110,51 @@ class AuthController extends Controller
         // 4. Redirect the user back to the product catalog page
         return redirect()->route('products.index')->with('success', 'Logged out successfully!');
     }
+
+    /**
+     * Show the form for editing the authenticated user's profile.
+     * 
+     * @return View
+     */
+    public function editProfile(): View
+    {
+        // Fetch the currently logged-in user instance directly from Auth facade
+        $user = Auth::user();
+
+        return view('auth.profile', compact('user'));
+    }
+
+    /**
+     * Update the authenticated user's profile parameters.
+     * 
+     * @param Request $request
+     * @return RedirectResponse
+     */
+    public function updateProfile(Request $request): RedirectResponse
+    {
+        $user = Auth::user();
+
+        // Validate the profile modification inputs
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'current_password' => 'nullable|required_with:new_password|string',
+            'new_password' => 'nullable|string|min:8|confirmed', // Must match with new_password_confirmation
+        ]);
+
+        // Check and verify current password match if user intends to update to a new password
+        if ($request->filled('new_password')) {
+            if (!Hash::check($request->current_password, $user->password)) {
+                return redirect()->back()->withErrors(['current_password' => 'The provided current password does not match our records.']);
+            }
+            // Encrypt and assign the safe new password string buffer
+            $user->password = Hash::make($request->new_password);
+        }
+
+        // Update the basic account specifications data fields
+        $user->name = $request->name;
+        $user->save();
+
+        // Redirect back to store front with a success toast notification
+        return redirect()->route('products.index')->with('success', 'Your personal account profile details updated successfully!');
+    }
 }

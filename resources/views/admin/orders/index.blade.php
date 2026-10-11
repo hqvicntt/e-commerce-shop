@@ -25,8 +25,10 @@
                     <li class="nav-item me-3">
                         <a class="nav-link" href="{{ route('products.index') }}" target="_blank">View Store &rarr;</a>
                     </li>
-                    <li class="nav-item text-white me-3">
-                        Welcome, <span class="fw-bold text-warning">{{ Auth::user()->name }}</span>
+                    <li class="nav-item me-3">
+                        <a class="nav-link @if(Route::is('profile.edit')) active fw-bold text-warning @endif" href="{{ route('profile.edit') }}">
+                            Hello, {{ Auth::user()->name }}
+                        </a>
                     </li>
                     <li class="nav-item">
                         <form action="{{ route('logout') }}" method="POST" class="d-inline">
