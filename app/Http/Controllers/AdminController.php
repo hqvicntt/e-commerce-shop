@@ -227,4 +227,22 @@ class AdminController extends Controller
         // Redirect back to orders listing with a success flash alert
         return redirect()->route('admin.orders.index')->with('success', 'Order status updated successfully!');
     }
+
+    /**
+     * Display the detailed parameters of a specific customer order.
+     * 
+     * @param int $id
+     * @return View
+     */
+    public function showOrder(int $id): View
+    {
+        // Fetch the specific order by ID with its related user details
+        $order = Order::with('user')->findOrFail($id);
+
+        // Explode the concatenated product string into an iterable array
+        // Example: "iPhone (x2), iPad (x1)" becomes an array of 2 elements
+        $productsArray = explode(', ', $order->product_names);
+
+        return view('admin.orders.show', compact('order', 'productsArray'));
+    }
 }

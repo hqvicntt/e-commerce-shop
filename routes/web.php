@@ -71,4 +71,7 @@ Route::middleware(['auth', 'admin'])->group(function () {
 
     // Update order status process route
     Route::post('/admin/orders/update-status/{id}', [AdminController::class, 'updateStatus'])->name('admin.orders.update_status');
+
+    // Show single order details sheet route
+    Route::get('/admin/orders/show/{id}', [AdminController::class, 'showOrder'])->name('admin.orders.show');
 });
