@@ -46,6 +46,9 @@ Route::middleware(['auth'])->group(function () {
 
     // Route for processing the profile update request
     Route::post('/profile', [AuthController::class, 'updateProfile'])->name('profile.update');
+
+    // Route for submitting a product review
+    Route::post('/products/{id}/review', [ProductController::class, 'storeReview'])->name('products.review.store');
 });
 
 // Route group protected by 'auth' and 'admin' middleware (Requires authentication and admin role verification)
