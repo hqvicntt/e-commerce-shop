@@ -155,6 +155,18 @@
                             </a>
                         </h5>
 
+                        <!-- Display dynamic average star rating badge -->
+                        <div class="mb-3">
+                            @if($product->reviews_avg_rating)
+                                <span class="text-warning fw-bold" style="font-size: 14px;">
+                                    {{ number_format($product->reviews_avg_rating, 1) }} &#9733;
+                                </span>
+                                <small class="text-muted font-monospace">({{ $product->reviews_count ?? $product->reviews->count() }} reviews)</small>
+                            @else
+                                <small class="text-muted italic" style="font-size: 12px;">No ratings yet</small>
+                            @endif
+                        </div>
+
                         <!-- Product Description Snippet -->
                         <p class="card-text text-muted text-sm flex-grow-1">
                             {{ Str::limit($product->description, 80, '...') }}
