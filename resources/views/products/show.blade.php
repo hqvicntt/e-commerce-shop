@@ -108,6 +108,20 @@
                     <!-- Product Name -->
                     <h1 class="fw-bold text-dark mb-2">{{ $product->name }}</h1>
 
+                    <!-- Display main average star rating badge below product title -->
+                    <div class="mb-3">
+                        @if($product->reviews_avg_rating)
+                            <div class="d-flex align-items-center">
+                                <span class="badge bg-dark fs-6 fw-bold px-3 py-1.5 me-2">
+                                    {{ number_format($product->reviews_avg_rating, 1) }} &#9733;
+                                </span>
+                                <span class="text-muted small fw-semibold">Based on {{ $product->reviews->count() }} customer feedback entries</span>
+                            </div>
+                        @else
+                            <span class="badge bg-light text-secondary border px-3 py-1.5 small">Not Rated Yet</span>
+                        @endif
+                    </div>
+
                     <!-- Availability / Stock Status -->
                     <p class="text-muted mb-4">
                         Availability:

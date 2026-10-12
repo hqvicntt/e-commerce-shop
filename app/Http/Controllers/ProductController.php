@@ -14,7 +14,7 @@ use Illuminate\Http\RedirectResponse;
 class ProductController extends Controller
 {
     /**
-     * Display a listing of products with search and filter capabilities.
+     * Display a listing of products with search, filter, and average ratings.
      * 
      * @param Request $request
      * @return View
@@ -24,8 +24,10 @@ class ProductController extends Controller
         // Fetch all categories to populate the filter dropdown sidebar/topbar
         $categories = Category::all();
 
-        // Initialize the dynamic query builder for Product model with its relationship
-        $query = Product::with('category')->where('is_active', true);
+        // Initialize the dynamic query builder for Product model with its relationships and average rating calculation
+        $query = Product::with('category')
+            ->withAvg('reviews', 'rating') // Auto-generates 'reviews_avg_rating' column
+            ->where('is_active', true);
 
         // Apply keyword search filter if present in request query string
         if ($request->filled('keyword')) {
@@ -46,7 +48,7 @@ class ProductController extends Controller
     }
 
     /**
-     * Display the specified product detail with its reviews.
+     * Display the specified product detail with its reviews and average rating.
      * 
      * @param int $id
      * @return View
@@ -54,7 +56,9 @@ class ProductController extends Controller
     public function show(int $id): View
     {
         // Eager load reviews and the users who wrote them to prevent N+1 query issue
-        $product = Product::with(['reviews.user', 'category'])->findOrFail($id);
+        $product = Product::with(['reviews.user', 'category'])
+            ->withAvg('reviews', 'rating')
+            ->findOrFail($id);
 
         // Pass the single product data to the view named 'products.show'
         return view('products.show', compact('product'));
