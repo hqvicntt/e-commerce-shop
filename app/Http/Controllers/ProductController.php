@@ -5,9 +5,11 @@ namespace App\Http\Controllers;
 use App\Models\Product; // Import the Product model to query database
 use App\Models\Category;
 use App\Models\Order;
+use App\Models\Review;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View; // Import View class for return type
+use Illuminate\Http\RedirectResponse;
 
 class ProductController extends Controller
 {
@@ -44,15 +46,15 @@ class ProductController extends Controller
     }
 
     /**
-     * Display the specified product.
+     * Display the specified product detail with its reviews.
      * 
      * @param int $id
      * @return View
      */
     public function show(int $id): View
     {
-        // Find the product by its ID or throw a 404 error if not found
-        $product = Product::findOrFail($id);
+        // Eager load reviews and the users who wrote them to prevent N+1 query issue
+        $product = Product::with(['reviews.user', 'category'])->findOrFail($id);
 
         // Pass the single product data to the view named 'products.show'
         return view('products.show', compact('product'));
@@ -74,5 +76,36 @@ class ProductController extends Controller
         $orders = Order::where('user_id', Auth::id())->latest()->get();
 
         return view('products.orders', compact('orders'));
+    }
+
+    /**
+     * Store a newly created product review in the database.
+     * 
+     * @param Request $request
+     * @param int $id
+     * @return RedirectResponse
+     */
+    public function storeReview(Request $request, int $id): RedirectResponse
+    {
+        // 1. Enforce security: user must be logged in to leave a review
+        if (!Auth::check()) {
+            return redirect()->route('login')->with('error', 'Please sign in to write a review.');
+        }
+
+        // 2. Validate the incoming rating and comment parameters
+        $request->validate([
+            'rating' => 'required|integer|between:1,5', // Must be an integer from 1 to 5
+            'comment' => 'required|string|min:5', // Minimum 5 characters
+        ]);
+
+        // 3. Create the review record linked to current user and product
+        Review::create([
+            'user_id' => Auth::id(),
+            'product_id' => $id,
+            'rating' => $request->rating,
+            'comment' => $request->comment,
+        ]);
+
+        return redirect()->back()->with('success', 'Thank you! Your product review has been submitted.');
     }
 }

@@ -144,6 +144,85 @@
         </div>
     </div>
 
+    <hr class="my-5">
+
+        <!-- Product Reviews and Ratings Section Grid Layout -->
+        <div class="row mt-5">
+            
+            <!-- Left Column: Display list of existing customer reviews -->
+            <div class="col-md-7 mb-4 mb-md-0">
+                <h3 class="fw-bold text-dark text-center mb-4">Customer Reviews ({{ $product->reviews->count() }})</h3>
+                
+                <div style="max-height: 500px; overflow-y: auto;" class="pe-2">
+                    @forelse($product->reviews as $review)
+                        <div class="card border-0 shadow-sm p-3 mb-3 bg-white rounded">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <div>
+                                    <strong class="text-dark">{{ $review->user->name }}</strong>
+                                    <span class="text-muted small mx-2">|</span>
+                                    <small class="text-muted">{{ $review->created_at->format('M d, Y') }}</small>
+                                </div>
+                                <!-- Display star rating value text -->
+                                <span class="badge bg-dark fw-bold">{{ $review->rating }} &#9733;</span>
+                            </div>
+                            <p class="text-secondary m-0 small fw-medium" style="white-space: pre-line;">{{ $review->comment }}</p>
+                        </div>
+                    @empty
+                        <div class="text-muted py-4 text-center border rounded bg-white">
+                            No reviews found for this product yet. Be the first to share your thoughts!
+                        </div>
+                    @endif
+                </div>
+            </div>
+
+            <!-- Right Column: Interactive Review Form for logged-in users -->
+            <div class="col-md-5">
+                <div class="card border-0 shadow-sm p-4 bg-white rounded position-sticky" style="top: 20px;">
+                    <h4 class="fw-bold text-dark mb-3">Write a Review</h4>
+                    
+                    @auth
+                        <form action="{{ route('products.review.store', ['id' => $product->id]) }}" method="POST">
+                            @csrf
+
+                            <!-- Rating Score Star Select Menu Box -->
+                            <div class="mb-3">
+                                <label for="rating" class="form-label fw-semibold">Rating Score</label>
+                                <select name="rating" id="rating" class="form-select @error('rating') is-invalid @enderror">
+                                    <option value="" selected disabled>-- Select Score Stars --</option>
+                                    <option value="5" {{ old('rating') == '5' ? 'selected' : '' }}>5 Stars - Excellent</option>
+                                    <option value="4" {{ old('rating') == '4' ? 'selected' : '' }}>4 Stars - Very Good</option>
+                                    <option value="3" {{ old('rating') == '3' ? 'selected' : '' }}>3 Stars - Average</option>
+                                    <option value="2" {{ old('rating') == '2' ? 'selected' : '' }}>2 Stars - Poor</option>
+                                    <option value="1" {{ old('rating') == '1' ? 'selected' : '' }}>1 Star - Terrible</option>
+                                </select>
+                                @error('rating')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+
+                            <!-- Comment Input Field Box -->
+                            <div class="mb-4">
+                                <label for="comment" class="form-label fw-semibold">Your Review Feedback</label>
+                                <textarea name="comment" id="comment" rows="4" class="form-control @error('comment') is-invalid @enderror" placeholder="Write your detailed specifications feedback here (minimum 5 characters)...">{{ old('comment') }}</textarea>
+                                @error('comment')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+
+                            <button type="submit" class="btn btn-dark w-100 py-2.5 fw-bold">Submit Review</button>
+                        </form>
+                    @else
+                        <!-- Call to Action placeholder if customer is a guest visitor -->
+                        <div class="text-center py-4">
+                            <p class="text-muted small">You must be authenticated to publish product reviews details.</p>
+                            <a href="{{ route('login') }}" class="btn btn-sm btn-outline-dark fw-bold px-4">Sign In Now</a>
+                        </div>
+                    @endauth
+                </div>
+            </div>
+
+        </div>
+
     <!-- Include Bootstrap 5 JS Bundle via CDN -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous">
