@@ -8,6 +8,8 @@ use Illuminate\Http\Request;
 use Illuminate\View\View;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\OrderConfirmedMail;
 
 class CartController extends Controller
 {
@@ -89,12 +91,15 @@ class CartController extends Controller
         $productNamesString = implode(', ', $productNamesArray);
 
         // Create and store the order record into MySQL database
-        Order::create([
+        $order = Order::create([
             'user_id' => Auth::id(), // Get current logged-in user ID
             'product_names' => $productNamesString,
             'total_price' => $totalPrice,
             'status' => 'pending',
         ]);
+
+        // Send order confirmation email to the user
+        Mail::to($order->user->email)->send(new OrderConfirmedMail($order));
 
         // Clear the shopping cart session after successful purchase
         session()->forget('cart');
