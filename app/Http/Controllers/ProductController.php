@@ -14,7 +14,7 @@ use Illuminate\Http\RedirectResponse;
 class ProductController extends Controller
 {
     /**
-     * Display a listing of products with search, filter, and average ratings.
+     * Display a listing of products with search, filter, average ratings, and special homepage sections.
      * 
      * @param Request $request
      * @return View
@@ -24,7 +24,14 @@ class ProductController extends Controller
         // Fetch all categories to populate the filter dropdown sidebar/topbar
         $categories = Category::all();
 
-        // Initialize the dynamic query builder for Product model with its relationships and average rating calculation
+        // Fetch exactly 6 newest items for the "Latest Arrivals" carousel section
+        $latestProducts = Product::where('is_active', true)
+            ->withAvg('reviews', 'rating')
+            ->latest()
+            ->take(6)
+            ->get();
+
+        // Initialize the dynamic query builder for Product model with its relationships and average rating calculation (Main query handler for the paginated product catalog filter list)
         $query = Product::with('category')
             ->withAvg('reviews', 'rating') // Auto-generates 'reviews_avg_rating' column
             ->where('is_active', true);
@@ -44,7 +51,7 @@ class ProductController extends Controller
         $products = $query->latest()->paginate(12)->withQueryString();
 
         // Pass the products data to the view named 'products.index'
-        return view('products.index', compact('products', 'categories'));
+        return view('products.index', compact('products', 'categories', 'latestProducts'));
     }
 
     /**

@@ -93,6 +93,44 @@
             </div>
         @endif
 
+        <!-- Featured Latest Arrivals Section Title -->
+        <div class="mb-5">
+            <h2 class="fw-bold text-dark mb-1">Latest Arrivals</h2>
+            <p class="text-muted small mb-4">Discover our newest inventory entries added fresh to the store catalog.</p>
+            
+            <div class="row row-cols-1 row-cols-md-3 row-cols-lg-6 g-3">
+                @foreach($latestProducts as $latestItem)
+                    <div class="col">
+                        <div class="card h-100 border-0 shadow-sm bg-white rounded-3 position-relative overflow-hidden">
+                            <!-- New Item Badge Overlay -->
+                            <span class="position-absolute top-0 start-0 badge bg-danger text-uppercase fw-bold rounded-0" style="font-size: 10px; z-index: 2; padding: 4px 8px;">
+                                New
+                            </span>
+                            
+                            <!-- Product Image Render link -->
+                            <a href="{{ route('products.show', ['id' => $latestItem->id]) }}">
+                                <img src="{{ $latestItem->image ? asset('storage/' . $latestItem->image) : 'https://placehold.co/600x400/png?text=Hello+World&font=roboto' }}" class="card-img-top" style="height: 130px; object-fit: cover;" alt="{{ $latestItem->name }}">
+                            </a>
+                            
+                            <div class="card-body p-2 d-flex flex-column justify-content-between">
+                                <h6 class="card-title fw-bold text-dark text-truncate mb-1" title="{{ $latestItem->name }}">
+                                    {{ $latestItem->name }}
+                                </h6>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <span class="fw-bold text-primary small">${{ number_format($latestItem->price, 2) }}</span>
+                                    @if($latestItem->reviews_avg_rating)
+                                        <small class="text-warning fw-bold" style="font-size: 11px;">
+                                            {{ number_format($latestItem->reviews_avg_rating, 1) }} &#9733;
+                                        </small>
+                                    @endif
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                @endforeach
+            </div>
+        </div>
+
         <!-- Search and Filter Navigation Bar Row -->
         <div class="card border-0 shadow-sm p-3 mb-5 bg-white rounded">
             <form action="{{ route('products.index') }}" method="GET" class="row g-3 align-items-center">
