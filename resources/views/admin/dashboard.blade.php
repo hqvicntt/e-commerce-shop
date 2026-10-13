@@ -8,6 +8,7 @@
     <!-- Include Bootstrap 5 CSS via CDN -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 
 <body class="bg-light">
@@ -60,6 +61,15 @@
             <a href="{{ route('admin.products.create') }}" class="btn btn-dark fw-bold px-4 py-2 shadow-sm">
                 + Add New Product
             </a>
+        </div>
+
+        <!-- Financial Revenue Stat Analytics Chart Canvas Panel -->
+        <div class="card border-0 shadow-sm p-4 mb-4 bg-white rounded">
+            <h4 class="fw-bold text-dark mb-3">Financial Revenue Analytics (Last 7 Active Days)</h4>
+            <div style="position: relative; height:250px; width:100%">
+                <!-- Chart.js hooks directly into this HTML5 canvas tag element -->
+                <canvas id="revenueChart"></canvas>
+            </div>
         </div>
 
         <!-- Products Table Card Container -->
@@ -135,6 +145,42 @@
             </div>
         </div>
     </div>
+
+    <!-- JavaScript code segment block to initialize and render Chart.js graphics -->
+    <script>
+        const ctx = document.getElementById('revenueChart').getContext('2d');
+        
+        // Safely echo json encoded array structures from Laravel controller variables
+        const labelsData = {!! json_encode($chartLabels) !!};
+        const valuesData = {!! json_encode($chartValues) !!};
+
+        new Chart(ctx, {
+            type: 'bar', // Render a high-performance column bar layout graph
+            data: {
+                labels: labelsData, // Dates along the X-axis
+                datasets: [{
+                    label: 'Daily Revenue Total ($)',
+                    data: valuesData, // Total cash amount values along the Y-axis
+                    backgroundColor: '#198754', // Dark Bootstrap green style theme color
+                    borderRadius: 6,
+                    borderWidth: 0
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        grid: { color: '#f1f1f1' }
+                    },
+                    x: {
+                        grid: { display: false }
+                    }
+                }
+            }
+        });
+    </script>
 
     <!-- Include Bootstrap 5 JS Bundle via CDN -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"

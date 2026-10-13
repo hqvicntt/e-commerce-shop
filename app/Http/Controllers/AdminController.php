@@ -14,7 +14,7 @@ use Illuminate\Support\Facades\Storage;
 class AdminController extends Controller
 {
     /**
-     * Display the admin dashboard with all products.
+     * Display the main admin dashboard with statistics and financial charts.
      * 
      * @return View
      */
@@ -23,7 +23,20 @@ class AdminController extends Controller
         // Fetch all products with their related categories for admin view
         $products = Product::with('category')->latest()->get();
 
-        return view('admin.dashboard', compact('products'));
+        // Fetch completed orders grouped by date to calculate daily revenue metrics
+        // Using raw SQL query constructs to format dates and compute sums
+        $revenueData = Order::where('status', 'completed')
+            ->selectRaw('DATE(created_at) as date, SUM(total_price) as total')
+            ->groupBy('date')
+            ->orderBy('date', 'asc')
+            ->take(7) // Retrieve statistics for the last 7 entries
+            ->get();
+
+        // Separate the collection database results into clean arrays for JavaScript ingestion
+        $chartLabels = $revenueData->pluck('date')->toArray(); // Array of dates (e.g., ["2026-10-10", "2026-10-11"])
+        $chartValues = $revenueData->pluck('total')->toArray(); // Array of revenue figures (e.g., [450.00, 999.99])
+
+        return view('admin.dashboard', compact('products', 'chartLabels', 'chartValues'));
     }
 
     /**
