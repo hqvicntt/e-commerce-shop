@@ -73,6 +73,10 @@
                             <div class="mb-3">
                                 @if($order->status === 'pending')
                                     <span class="badge bg-warning text-dark px-4 py-2 fs-6 fw-bold text-uppercase shadow-sm">Pending</span>
+                                @elseif($order->status === 'processing')
+                                    <span class="badge bg-info text-dark px-4 py-2 fs-6 fw-bold text-uppercase shadow-sm">Processing</span>
+                                @elseif($order->status === 'shipped')
+                                    <span class="badge bg-primary px-4 py-2 fs-6 fw-bold text-uppercase shadow-sm">Shipped</span>
                                 @elseif($order->status === 'completed')
                                     <span class="badge bg-success px-4 py-2 fs-6 fw-bold text-uppercase shadow-sm">Completed</span>
                                 @else

@@ -86,11 +86,15 @@
                                 </td>
                                 <td>
                                     @if($order->status === 'pending')
-                                        <span class="badge bg-warning text-dark px-3 py-2 fw-bold text-uppercase">Pending</span>
+                                        <span class="badge bg-warning text-dark px-4 py-2 fs-6 fw-bold text-uppercase shadow-sm">Pending</span>
+                                    @elseif($order->status === 'processing')
+                                        <span class="badge bg-info text-dark px-4 py-2 fs-6 fw-bold text-uppercase shadow-sm">Processing</span>
+                                    @elseif($order->status === 'shipped')
+                                        <span class="badge bg-primary px-4 py-2 fs-6 fw-bold text-uppercase shadow-sm">Shipped</span>
                                     @elseif($order->status === 'completed')
-                                        <span class="badge bg-success px-3 py-2 fw-bold text-uppercase">Completed</span>
+                                        <span class="badge bg-success px-4 py-2 fs-6 fw-bold text-uppercase shadow-sm">Completed</span>
                                     @else
-                                        <span class="badge bg-danger px-3 py-2 fw-bold text-uppercase">Cancelled</span>
+                                        <span class="badge bg-danger px-4 py-2 fs-6 fw-bold text-uppercase shadow-sm">Cancelled</span>
                                     @endif
                                 </td>
                             </tr>
