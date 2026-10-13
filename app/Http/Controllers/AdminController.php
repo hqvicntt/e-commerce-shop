@@ -229,7 +229,7 @@ class AdminController extends Controller
 
         // Validate that the incoming status value is within the allowed scope
         $request->validate([
-            'status' => 'required|in:pending,completed,cancelled',
+            'status' => 'required|in:pending,processing,shipped,completed,cancelled',
         ]);
 
         // Update the order status column in MySQL database

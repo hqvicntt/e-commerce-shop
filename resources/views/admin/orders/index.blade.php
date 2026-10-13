@@ -103,10 +103,14 @@
                                     </small>
                                 </td>
                                 <td>
-                                    <!-- Display current status badge -->
+                                    <!-- Display multi-stage status badge layout -->
                                     <div class="mb-2">
                                         @if($order->status === 'pending')
                                             <span class="badge bg-warning text-dark px-3 py-2 fw-bold text-uppercase">Pending</span>
+                                        @elseif($order->status === 'processing')
+                                            <span class="badge bg-info text-dark px-3 py-2 fw-bold text-uppercase">Processing</span>
+                                        @elseif($order->status === 'shipped')
+                                            <span class="badge bg-primary px-3 py-2 fw-bold text-uppercase">Shipped</span>
                                         @elseif($order->status === 'completed')
                                             <span class="badge bg-success px-3 py-2 fw-bold text-uppercase">Completed</span>
                                         @else
@@ -114,28 +118,40 @@
                                         @endif
                                     </div>
 
-                                    <!-- Quick Action Buttons: Only display if the order status is currently pending -->
-                                    @if($order->status === 'pending')
-                                        <div class="d-flex gap-1">
-                                            <!-- Complete Action Form -->
+                                    <!-- Sequential Action Controls based on current logistics layer -->
+                                    <div class="d-flex gap-1">
+                                        @if($order->status === 'pending')
+                                            <!-- Move to Processing stage -->
+                                            <form action="{{ route('admin.orders.update_status', ['id' => $order->id]) }}" method="POST" onsubmit="return confirm('Move order to PROCESSING state?');">
+                                                @csrf
+                                                <input type="hidden" name="status" value="processing">
+                                                <button type="submit" class="btn btn-xs btn-info fw-bold text-dark" style="font-size: 11px; padding: 2px 6px;">Process</button>
+                                            </form>
+                                        @elseif($order->status === 'processing')
+                                            <!-- Move to Shipped stage -->
+                                            <form action="{{ route('admin.orders.update_status', ['id' => $order->id]) }}" method="POST" onsubmit="return confirm('Dispatch order to SHIPPED carrier routes?');">
+                                                @csrf
+                                                <input type="hidden" name="status" value="shipped">
+                                                <button type="submit" class="btn btn-xs btn-primary fw-bold text-white" style="font-size: 11px; padding: 2px 6px;">Ship</button>
+                                            </form>
+                                        @elseif($order->status === 'shipped')
+                                            <!-- Move to Completed stage -->
                                             <form action="{{ route('admin.orders.update_status', ['id' => $order->id]) }}" method="POST" onsubmit="return confirm('Mark this order as COMPLETED?');">
                                                 @csrf
                                                 <input type="hidden" name="status" value="completed">
-                                                <button type="submit" class="btn btn-xs btn-success fw-bold text-white" style="font-size: 11px; padding: 2px 6px;">
-                                                    Done
-                                                </button>
+                                                <button type="submit" class="btn btn-xs btn-success fw-bold text-white" style="font-size: 11px; padding: 2px 6px;">Done</button>
                                             </form>
+                                        @endif
 
-                                            <!-- Cancel Action Form -->
-                                            <form action="{{ route('admin.orders.update_status', ['id' => $order->id]) }}" method="POST" onsubmit="return confirm('Are you sure you want to CANCEL this order?');">
+                                        <!-- Cancel action button remains accessible until order reaches terminal success stage -->
+                                        @if(in_array($order->status, ['pending', 'processing', 'shipped']))
+                                            <form action="{{ route('admin.orders.update_status', ['id' => $order->id]) }}" method="POST" onsubmit="return confirm('Are you sure you want to CANCEL this transaction?');">
                                                 @csrf
                                                 <input type="hidden" name="status" value="cancelled">
-                                                <button type="submit" class="btn btn-xs btn-outline-danger fw-bold" style="font-size: 11px; padding: 2px 6px;">
-                                                    Cancel
-                                                </button>
+                                                <button type="submit" class="btn btn-xs btn-outline-danger fw-bold" style="font-size: 11px; padding: 2px 6px;">Cancel</button>
                                             </form>
-                                        </div>
-                                    @endif
+                                        @endif
+                                    </div>
                                 </td>
                             </tr>
                         @empty
