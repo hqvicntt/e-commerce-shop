@@ -82,7 +82,18 @@ class CartController extends Controller
         $productNamesArray = [];
         $totalPrice = 0;
 
-        foreach ($cart as $item) {
+        foreach ($cart as $productId => $item) {
+            // Check if the product exists and has sufficient quantity in stock 
+            $product = Product::find($productId);
+
+            if (!$product || $product->quantity < $item['quantity']) {
+                return redirect()->back()->with('error', 'Sorry, ' . $item['name'] . ' is out of stock or does not have enough inventory.');
+            }
+
+            // Deduct the purchased quantity from the product's stock
+            $product->quantity -= $item['quantity'];
+            $product->save();
+
             $productNamesArray[] = $item['name'] . ' (x' . $item['quantity'] . ')';
             $totalPrice += $item['price'] * $item['quantity'];
         }

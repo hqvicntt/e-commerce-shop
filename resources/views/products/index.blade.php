@@ -216,6 +216,15 @@
                                 <span class="fs-5 fw-bold text-primary">${{ number_format($product->price, 2) }}</span>
                                 <small class="text-muted">Stock: {{ $product->quantity }}</small>
                             </div>
+                            <!-- Inventory Status Stock Control Layout -->
+                            <div class="mb-3 d-flex justify-content-between align-items-center">
+                                @if($product->quantity > 0)
+                                    <small class="text-success fw-semibold">In Stock: {{ $product->quantity }}</small>
+                                @else
+                                    <span class="badge bg-danger text-uppercase fw-bold shadow-sm" style="font-size: 11px;">Out of Stock</span>
+                                @endif
+                            </div>
+
                             <!-- Call to Action Button -->
                             <a href="{{ route('cart.add', ['id' => $product->id]) }}"
                                 class="btn btn-dark w-100 mt-2 @if($product->quantity <= 0) disabled @endif">

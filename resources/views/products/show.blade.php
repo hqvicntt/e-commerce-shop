@@ -138,14 +138,24 @@
                     <!-- Product Description Heading -->
                     <h5 class="fw-bold text-dark">Product Description:</h5>
                     <!-- Detailed Description Text -->
-                    <p class="text-muted mb-5 justify-content-center" style="text-align: justify;">
+                    <p class="text-muted mb-3 justify-content-center" style="text-align: justify;">
                         {{ $product->description }}
                     </p>
 
+                    <!-- Product Stock Inventory Status Indicator -->
+                    <div class="mb-4">
+                        @if($product->quantity > 0)
+                            <h4 class="text-success fw-bold m-0">In Stock: {{ $product->quantity }} units available</h4>
+                        @else
+                            <h4 class="text-danger fw-bold m-0 text-uppercase">&cross; Out of Stock</h4>
+                        @endif
+                    </div>
+
                     <!-- Action Area Buttons -->
                     <div class="d-grid gap-2 d-md-flex">
+
                         <a href="{{ route('cart.add', ['id' => $product->id]) }}"
-                            class="btn btn-dark w-100 mt-2 @if($product->quantity <= 0) disabled @endif">
+                            class="btn btn-dark px-5 py-3 fw-bold shadow-sm @if($product->quantity <= 0) disabled @endif">
                             Add to Cart
                         </a>
                         <button class="btn btn-outline-dark btn-lg px-4" href="#">
