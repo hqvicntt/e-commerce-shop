@@ -49,6 +49,9 @@ Route::middleware(['auth'])->group(function () {
 
     // Route for submitting a product review
     Route::post('/products/{id}/review', [ProductController::class, 'storeReview'])->name('products.review.store');
+
+    // Route for applying a coupon code to the shopping cart
+    Route::post('/cart/coupon', [CartController::class, 'applyCoupon'])->name('cart.coupon');
 });
 
 // Route group protected by 'auth' and 'admin' middleware (Requires authentication and admin role verification)
