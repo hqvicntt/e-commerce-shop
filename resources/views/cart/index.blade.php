@@ -106,30 +106,63 @@
                 </div>
             </div>
 
-            <!-- Right Column: Order Summary & Checkout -->
+            <!-- Right Column: Order Summary Card with Coupon integration -->
             <div class="col-lg-4">
-                <div class="card border-0 shadow-sm p-4">
-                    <h4 class="fw-bold mb-4">Order Summary</h4>
-                    <div class="d-flex justify-content-between mb-3">
-                        <span class="text-muted">Subtotal</span>
-                        <span class="fw-semibold">${{ number_format($total, 2) }}</span>
+                <div class="card border-0 shadow-sm p-4 bg-white rounded">
+                    <h4 class="fw-bold text-dark mb-4">Order Summary</h4>
+
+                    <!-- Display calculated original base subtotal -->
+                    <div class="d-flex justify-content-between mb-3 fs-5 border-bottom pb-2">
+                        <span class="text-muted">Price before discount:</span>
+                        <span class="fw-bold text-secondary">${{ number_format($total, 2) }}</span>
                     </div>
+
+                    <!-- Form interactive to enter Coupon parameters -->
+                    <form action="{{ route('cart.coupon') }}" method="POST" class="mb-4">
+                        @csrf
+                        <label for="coupon_code" class="form-label small fw-semibold text-muted text-uppercase">Have a promo voucher code?</label>
+                        <div class="input-group">
+                            <input type="text" name="coupon_code" id="coupon_code" class="form-control" placeholder="e.g. SALE10" value="{{ session('coupon')['code'] ?? '' }}">
+                            <button class="btn btn-outline-dark fw-bold" type="submit">Apply</button>
+                        </div>
+                    </form>
+
+                    <!-- Check and render discount parameters row if present in session -->
+                    @if(session()->has('coupon'))
+                        <div class="d-flex justify-content-between mb-3 text-success fw-semibold small">
+                            <span>Discount Badge ({{ session('coupon')['discount'] }}%):</span>
+                            <span>-${{ number_format(($total * session('coupon')['discount']) / 100 , 2) }}</span>
+                        </div>
+                    @endif
+                    
                     <div class="d-flex justify-content-between mb-4 border-bottom pb-3">
                         <span class="text-muted">Shipping</span>
                         <span class="text-success fw-bold">Free</span>
                     </div>
-                    <div class="d-flex justify-content-between mb-4">
-                        <span class="fs-5 fw-bold">Total</span>
-                        <span class="fs-5 fw-bold text-primary">${{ number_format($total, 2) }}</span>
+
+                    <div class="d-flex justify-content-between mb-4 fs-4 border-top pt-2">
+                        <span class="text-dark fw-bold">Grand Total:</span>
+                        <span class="fw-bold text-primary">
+                            @php
+                                if(session()->has('coupon')) {
+                                    $total -= ($total * session('coupon')['discount']) / 100;
+                                }
+                            @endphp
+                            ${{ number_format($total, 2) }}
+                        </span>
                     </div>
+
                     <form action="{{ route('cart.checkout') }}" method="POST">
                         @csrf
                         <button type="submit" class="btn btn-dark w-100 py-3 fw-bold mb-2">
                             Proceed to Checkout
                         </button>
                     </form>
+
                     <a href="{{ route('products.index') }}" class="btn btn-outline-secondary w-100 py-2">Continue
-                        Shopping</a>
+                        Shopping
+                    </a>
+                    
                 </div>
             </div>
         </div>

@@ -98,6 +98,13 @@ class CartController extends Controller
             $totalPrice += $item['price'] * $item['quantity'];
         }
 
+        // Apply discount if a valid coupon is present in the session
+        if (session()->has('coupon')) {
+            $discountPercentage = session()->get('coupon')['discount'];
+            $discountAmount = ($totalPrice * $discountPercentage) / 100;
+            $totalPrice = $totalPrice - $discountAmount; // Set new discounted grand total
+        }
+
         // Convert the array into a clean readable string (e.g., "iPhone (x2), iPad (x1)")
         $productNamesString = implode(', ', $productNamesArray);
 
@@ -112,9 +119,44 @@ class CartController extends Controller
         // Send order confirmation email to the user
         Mail::to($order->user->email)->send(new OrderConfirmedMail($order));
 
-        // Clear the shopping cart session after successful purchase
+        // Clear the shopping cart and coupon session after successful purchase
         session()->forget('cart');
+        session()->forget('coupon');
 
         return redirect()->route('products.index')->with('success', 'Order placed successfully! Thank you for shopping with us.');
+    }
+
+    /**
+     * Apply a discount coupon code to the shopping cart session.
+     * 
+     * @param Request $request
+     * @return RedirectResponse
+     */
+    public function applyCoupon(Request $request): RedirectResponse
+    {
+        $request->validate([
+            'coupon_code' => 'required|string',
+        ]);
+
+        $code = strtoupper($request->coupon_code);
+
+        // Define our valid coupon codes array hardcoded for optimization
+        $validCoupons = [
+            'SALE10' => 10, // 10% discount
+            'E-SHOP20' => 20, // 20% discount
+        ];
+
+        // Check if the input code matches our records
+        if (!array_key_exists($code, $validCoupons)) {
+            return redirect()->back()->with('error', 'Invalid coupon code! Please try another one.');
+        }
+
+        // Store the valid discount percentage factor inside user session
+        session()->put('coupon', [
+            'code' => $code,
+            'discount' => $validCoupons[$code]
+        ]);
+
+        return redirect()->back()->with('success', 'Coupon code "' . $code . '" applied successfully!');
     }
 }
